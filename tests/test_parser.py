@@ -5,7 +5,8 @@ from smb3_router.parser import frames_from_mssff, parse
 
 class TestParser(unittest.TestCase):
     def test_parse(self):
-        parse()
+        graph = parse()
+        self.assertEqual(90, len(graph.nodes))
 
     def test_frames_from_mssff(self):
         self.assertEqual(45, frames_from_mssff("45"))

@@ -11,14 +11,15 @@ class Level:
     difficulty: int
     enter: str
     exit: str
-    notes: str
-    granted_item: str
+    notes: str = ""
+    granted_item: str = ""
 
 
 @dataclass
 class Node:
     level: Level
-    prerequisites: List[Level]
+    prerequisites: List
+    required: bool = False
 
 
 @dataclass
