@@ -15,20 +15,25 @@ def parse_levels(workbook):
     for world_number in range(1, 8):
         sheet = workbook[f"World{world_number}"]
         for row in sheet.rows:
-            if row[0].value == "level":
+            level_name = row[0].value
+            if level_name == "level":
                 continue
-            mssff = str(int(row[4].value))
-            frames = frames_from_mssff(mssff)
-            level = Level(
-                name=row[0].value,
-                difficulty=int(row[1].value),
-                enter=row[2].value,
-                exit=row[3].value,
-                frames=frames,
-                notes=row[5].value,
-                granted_item=row[6].value,
-            )
-            levels[level.name] = level
+            if level_name is None:
+                break
+            try:
+                mssff = str(int(row[4].value))
+                level = Level(
+                    name=level_name,
+                    difficulty=int(row[1].value),
+                    enter=row[2].value,
+                    exit=row[3].value,
+                    frames=frames_from_mssff(mssff),
+                    notes=row[5].value,
+                    granted_item=row[6].value,
+                )
+                levels[level.name] = level
+            except Exception as e:
+                print(f"Exception reading level {level_name}: {e}")
     return levels
 
 
