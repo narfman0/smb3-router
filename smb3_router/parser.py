@@ -1,6 +1,6 @@
 from openpyxl import load_workbook
 
-from smb3_router.level import Level, Node, Graph
+from smb3_router.models import Graph, Level, Node
 
 
 def parse(path="data/times.xlsx", graph_name="Warpless"):

@@ -21,6 +21,9 @@ init-dev:
 run-test:
 	pytest --flake8 --black --cov=smb3_router --cov-report term-missing tests/
 
+run-main:
+	python -m smb3_router.main
+
 release-test: clean
 	python setup.py sdist bdist_wheel
 	twine upload --repository pypitest dist/*
@@ -29,5 +32,7 @@ release-prod: clean
 	python setup.py sdist bdist_wheel
 	twine upload --repository pypi dist/*
 
+m: run-main
+main: init m
 t: run-test
 test: init-dev t
