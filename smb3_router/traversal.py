@@ -6,12 +6,8 @@ def compute_path(nodes):
     # TODO add edge costs like overworld movement, pipe transitions
     cost_paths = []
     for node in nodes:
-        # Start from required node and work our way back to somewhere that
-        # has no prerequisite
-        if node.required:
+        if node.required and node.level.name == "BC":
             create_path_permutations(nodes, [node], node.level.frames, cost_paths)
-    # TODO this takes the smallest only of required level segments :\ so will
-    # return world 1 since it is shortest. Need to observe multiple requirements.
     return sorted(cost_paths, key=lambda cost_path: cost_path[0])[0]
 
 
