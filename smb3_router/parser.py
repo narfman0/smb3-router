@@ -24,7 +24,7 @@ def parse_graph(sheet, levels):
         node = nodes[level_name]
         node.required = bool(row[2].value)
         for prerequisite in row[1].value.split(","):
-            node.prerequisites.append(prerequisite)
+            node.prerequisites.append(nodes[prerequisite])
     return Graph(nodes=nodes.values())
 
 
