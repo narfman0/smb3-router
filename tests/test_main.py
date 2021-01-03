@@ -1,7 +1,7 @@
 import unittest
-from smb3_router.main import main
+from smb3_router.main import compute
 
 
 class TestMain(unittest.TestCase):
-    def test_main(self):
-        main()
+    def test_compute(self):
+        compute()

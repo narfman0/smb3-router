@@ -40,20 +40,17 @@ def parse_levels(workbook):
                 continue
             if level_name is None:
                 break
-            try:
-                mssff = str(int(row[4].value))
-                level = Level(
-                    name=level_name,
-                    difficulty=int(row[1].value),
-                    enter=row[2].value,
-                    exit=row[3].value,
-                    frames=frames_from_mssff(mssff),
-                    notes=row[5].value,
-                    granted_item=row[6].value,
-                )
-                levels[level.name] = level
-            except Exception as e:
-                print(f"Exception reading level {level_name}: {e}")
+            mssff = str(int(row[4].value))
+            level = Level(
+                name=level_name,
+                difficulty=int(row[1].value),
+                enter=row[2].value,
+                exit=row[3].value,
+                frames=frames_from_mssff(mssff),
+                notes=row[5].value,
+                granted_item=row[6].value,
+            )
+            levels[level.name] = level
     return levels
 
 

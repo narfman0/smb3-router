@@ -4,21 +4,27 @@ from smb3_router.parser import parse
 from smb3_router.traversal import compute_path
 
 
+DEFAULT_GRAPH_NAME = "Warpless"
+
+
 def main():
     parser = argparse.ArgumentParser(description="Compute expected times for routes.")
     parser.add_argument(
         "--graph_name",
-        default="Warpless",
+        default=DEFAULT_GRAPH_NAME,
         help="category or route to compute (default: Warpless)",
     )
     args = parser.parse_args()
-    graph = parse(graph_name=args.graph_name)
+    compute(args.graph_name)
+
+
+def compute(graph_name=DEFAULT_GRAPH_NAME):
+    graph = parse(graph_name=graph_name)
     cost, path = compute_path(graph)
-    path_str = ", ".join([node.level.name for node in path])
+    path = ", ".join([node.level.name for node in path])
     seconds = cost // 60.09
-    print(
-        f"{args.graph_name} computed path {path_str} will take {cost} frames ({int(seconds // 60)}:{int(seconds % 60)})"
-    )
+    time = f"{int(seconds // 60)}:{int(seconds % 60)}"
+    print(f"{graph_name} computed path {path} will cost {cost} frames ({time})")
 
 
 if __name__ == "__main__":
