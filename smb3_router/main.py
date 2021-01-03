@@ -1,6 +1,7 @@
 import argparse
 
 from smb3_router.parser import parse
+from smb3_router.traversal import compute_path
 
 
 def main():
@@ -12,7 +13,12 @@ def main():
     )
     args = parser.parse_args()
     graph = parse(graph_name=args.graph_name)
-    print(f"Graph with {len(graph.nodes)} nodes computed")
+    cost, path = compute_path(graph.nodes)
+    path_str = ", ".join([node.level.name for node in path])
+    minutes = (cost / 60.09) / 60
+    print(
+        f"{args.graph_name} computed path {path_str} will take {cost} frames ({minutes:.2f}m)"
+    )
 
 
 if __name__ == "__main__":
