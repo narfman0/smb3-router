@@ -1,24 +1,26 @@
-def compute_path(nodes):
+def compute_path(graph, start_level_name="1-1", end_level_name="BC"):
     """ Create a path completing all required levels """
     # TODO add constraints
     # TODO add items like clouds
     # TODO add HBs and music boxes
     # TODO add edge costs like overworld movement, pipe transitions
     cost_paths = []
-    for node in nodes:
-        if node.required and node.level.name == "BC":
-            create_path_permutations(nodes, [node], node.level.frames, cost_paths)
+    start_node = graph.find_start_node()
+    end_node = graph.find_end_node()
+    create_path_permutations(
+        end_node, [start_node], start_node.level.frames, cost_paths
+    )
     return sorted(cost_paths, key=lambda cost_path: cost_path[0])[0]
 
 
-def create_path_permutations(nodes, path, cost, cost_paths):
-    current_level = path[-1]
-    if not current_level.previous_nodes:
-        cost_paths.append((cost, list(reversed(path))))
+def create_path_permutations(end_node, path, cost, cost_paths):
+    current_node = path[-1]
+    if current_node == end_node:
+        cost_paths.append((cost, list(path)))
         return
-    for previous_node in current_level.previous_nodes:
-        path.append(previous_node)
+    for next_node in current_node.next_nodes:
+        path.append(next_node)
         create_path_permutations(
-            nodes, path, cost + previous_node.level.frames, cost_paths
+            end_node, path, cost + next_node.level.frames, cost_paths
         )
         del path[-1]

@@ -26,3 +26,15 @@ class Node:
 @dataclass
 class Graph:
     nodes: List[Node]
+    start_node_name: str = "1-1"
+    end_node_name: str = "BC"
+
+    def find_start_node(self):
+        for node in self.nodes:
+            if node.level.name == self.start_node_name:
+                return node
+
+    def find_end_node(self):
+        for node in self.nodes:
+            if node.level.name == self.end_node_name:
+                return node

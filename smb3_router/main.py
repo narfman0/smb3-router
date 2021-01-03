@@ -13,7 +13,7 @@ def main():
     )
     args = parser.parse_args()
     graph = parse(graph_name=args.graph_name)
-    cost, path = compute_path(graph.nodes)
+    cost, path = compute_path(graph)
     path_str = ", ".join([node.level.name for node in path])
     seconds = cost // 60.09
     print(
