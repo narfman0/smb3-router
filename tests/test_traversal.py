@@ -8,5 +8,5 @@ class TestTraversal(unittest.TestCase):
     def test_compute_path(self):
         graph = parse()
         cost, path = compute_path(graph.nodes)
-        self.assertEqual(6, len(path))
-        self.assertEqual(10417, cost)
+        self.assertEqual(69, len(path))
+        self.assertEqual(180911, cost)

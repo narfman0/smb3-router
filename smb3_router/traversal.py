@@ -13,12 +13,12 @@ def compute_path(nodes):
 
 def create_path_permutations(nodes, path, cost, cost_paths):
     current_level = path[-1]
-    if not current_level.prerequisites:
+    if not current_level.previous_levels:
         cost_paths.append((cost, list(reversed(path))))
         return
-    for prerequisite in current_level.prerequisites:
-        path.append(prerequisite)
+    for previous_level in current_level.previous_levels:
+        path.append(previous_level)
         create_path_permutations(
-            nodes, path, cost + prerequisite.level.frames, cost_paths
+            nodes, path, cost + previous_level.level.frames, cost_paths
         )
         del path[-1]

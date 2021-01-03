@@ -18,7 +18,7 @@ class Level:
 @dataclass
 class Node:
     level: Level
-    prerequisites: List
+    previous_levels: List
     required: bool = False
 
 
