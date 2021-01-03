@@ -12,7 +12,7 @@ def parse(path="data/times.xlsx", graph_name="Warpless"):
 def parse_graph(sheet, levels):
     """ Parse a graph, which represents a route for a specific category """
     nodes = {
-        level_name: Node(level=level, previous_levels=[])
+        level_name: Node(level=level, previous_nodes=[], next_nodes=[])
         for level_name, level in levels.items()
     }
     for row in sheet.rows:
@@ -23,8 +23,10 @@ def parse_graph(sheet, levels):
             break
         node = nodes[level_name]
         node.required = bool(row[2].value)
-        for previous_level in row[1].value.split(","):
-            node.previous_levels.append(nodes[previous_level])
+        for previous_node_name in row[1].value.split(","):
+            previous_node = nodes[previous_node_name]
+            node.previous_nodes.append(previous_node)
+            previous_node.next_nodes.append(node)
     return Graph(nodes=nodes.values())
 
 

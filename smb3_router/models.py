@@ -18,7 +18,8 @@ class Level:
 @dataclass
 class Node:
     level: Level
-    previous_levels: List
+    previous_nodes: List
+    next_nodes: List
     required: bool = False
 
 
