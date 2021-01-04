@@ -1,6 +1,6 @@
 from openpyxl import load_workbook
 
-from smb3_router.models import Graph, Level, Node
+from smb3_router.models import Item, Graph, Level, Node
 
 
 def parse(path="data/times.xlsx", graph_name="Warpless"):
@@ -41,6 +41,9 @@ def parse_levels(workbook):
             if level_name is None:
                 break
             mssff = str(int(row[4].value))
+            granted_item = row[6].value
+            if granted_item:
+                granted_item = Item.value_of(granted_item)
             level = Level(
                 name=level_name,
                 difficulty=int(row[1].value),
@@ -48,7 +51,7 @@ def parse_levels(workbook):
                 exit=row[3].value,
                 frames=frames_from_mssff(mssff),
                 notes=row[5].value,
-                granted_item=row[6].value,
+                granted_item=granted_item,
             )
             levels[level.name] = level
     return levels
