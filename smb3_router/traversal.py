@@ -33,10 +33,14 @@ def create_path_permutations(node, end_node, path, cost, items, cost_paths):
     if not node.required:
         for i, item in enumerate(items):
             if item == Item.CLOUD:
-                pass
-                # TODO use clouds
-                # cloud_items = items.copy()
-                # del cloud_items[i]
-                # create_path_permutations(
-                #   end_node, path, cost + USE_ITEM_COST, cloud_items, cost_paths
-                # )
+                del items[i]
+                for next_node in node.next_nodes:
+                    create_path_permutations(
+                        next_node,
+                        end_node,
+                        path,
+                        cost + USE_ITEM_COST,
+                        items,
+                        cost_paths,
+                    )
+                items.insert(i, Item.CLOUD)
