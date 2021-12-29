@@ -1,3 +1,5 @@
+import logging
+
 from smb3_router.models import Item, PathNode
 
 USE_ITEM_COST = 40  # this shouldnt be static, but using for simplicity
@@ -12,14 +14,20 @@ def compute_path(graph, start_level_name="1-1", end_level_name="BC"):
     start_node = graph.find_start_node()
     end_node = graph.find_end_node()
     create_path_permutations(start_node, end_node, [], 0, [], cost_paths, "small", None)
+    if not cost_paths:
+        raise Exception("No valid paths given constraints!")
     return sorted(cost_paths, key=lambda cost_path: cost_path[0])[0]
 
 
 def create_path_permutations(
     node, end_node, path, cost, items, cost_paths, enter, item_used
 ):
-    if node.level.enter != enter:
-        pass  # TODO observe enter powerup state
+    # logging.debug(
+    #     f"Creating permutation with level {node.level.name} with len(path) {len(path)} items {items} enter {enter} item_used {item_used}"
+    # )
+    if node.level.enter != enter:  # TODO observe star usage
+        pass  # TODO return
+    # TODO item_used multiple items (e.g. star)
     path.append(PathNode(level=node.level, enter=enter, item_used=item_used))
     cost += node.level.frames
     if node == end_node:
@@ -28,7 +36,6 @@ def create_path_permutations(
     if node.level.granted_item:
         items.append(node.level.granted_item)
     for next_node in node.next_nodes:
-        # TODO use items
         create_path_permutations(
             next_node, end_node, path, cost, items, cost_paths, node.level.exit, None
         )
@@ -36,19 +43,21 @@ def create_path_permutations(
     if node.level.granted_item:
         del items[-1]
     cost -= node.level.frames
-    if not node.required:
-        for i, item in enumerate(items):
-            if item == Item.CLOUD:
-                del items[i]
-                for next_node in node.next_nodes:
-                    create_path_permutations(
-                        next_node,
-                        end_node,
-                        path,
-                        cost + USE_ITEM_COST,
-                        items,
-                        cost_paths,
-                        node.level.exit,
-                        Item.CLOUD,
-                    )
-                items.insert(i, Item.CLOUD)
+    for i, item in enumerate(items):
+        if node.required and item == Item.CLOUD:
+            continue
+        # TODO use other items e.g. star
+        if item == Item.CLOUD:  # TODO or item == Item.PWING:
+            del items[i]
+            for next_node in node.next_nodes:
+                create_path_permutations(
+                    next_node,
+                    end_node,
+                    path,
+                    cost + USE_ITEM_COST,
+                    items,
+                    cost_paths,
+                    node.level.exit,
+                    item,
+                )
+            items.insert(i, item)

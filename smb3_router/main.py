@@ -1,4 +1,5 @@
 import argparse
+import logging
 
 from smb3_router.parser import parse
 from smb3_router.timing import frames_to_duration_string
@@ -9,6 +10,7 @@ DEFAULT_GRAPH_NAME = "Warpless"
 
 
 def main():
+    initialize_logging()
     parser = argparse.ArgumentParser(description="Compute expected times for routes.")
     parser.add_argument(
         "--graph_name",
@@ -25,6 +27,25 @@ def compute(graph_name=DEFAULT_GRAPH_NAME):
     path = ", ".join([node.level.name for node in path])
     duration = frames_to_duration_string(cost)
     print(f"{graph_name} computed path {path} will cost {cost} frames ({duration})")
+
+
+def initialize_logging():
+    # set up logging to file
+    logging.basicConfig(
+        filename="router.log",
+        level=logging.DEBUG,
+        format="[%(asctime)s] {%(pathname)s:%(lineno)d} %(levelname)s - %(message)s",
+        datefmt="%H:%M:%S",
+    )
+
+    # set up logging to console
+    console = logging.StreamHandler()
+    console.setLevel(logging.INFO)
+    # set a format which is simpler for console use
+    formatter = logging.Formatter("%(name)-12s: %(levelname)-8s %(message)s")
+    console.setFormatter(formatter)
+    # add the handler to the root logger
+    logging.getLogger("").addHandler(console)
 
 
 if __name__ == "__main__":
