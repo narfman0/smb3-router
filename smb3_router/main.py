@@ -26,14 +26,16 @@ def compute(graph_name=DEFAULT_GRAPH_NAME):
     cost, path = compute_path(graph)
     path = ", ".join([node.level.name for node in path])
     duration = frames_to_duration_string(cost)
-    print(f"{graph_name} computed path {path} will cost {cost} frames ({duration})")
+    logging.info(
+        f"{graph_name} computed path {path} will cost {cost} frames ({duration})"
+    )
 
 
 def initialize_logging():
     # set up logging to file
     logging.basicConfig(
         filename="router.log",
-        level=logging.DEBUG,
+        level=logging.INFO,
         format="[%(asctime)s] {%(pathname)s:%(lineno)d} %(levelname)s - %(message)s",
         datefmt="%H:%M:%S",
     )

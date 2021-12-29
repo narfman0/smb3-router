@@ -11,23 +11,32 @@ def parse(path="data/times.xlsx", graph_name="Warpless"):
 
 def parse_graph(sheet, levels):
     """ Parse a graph, which represents a route for a specific category """
-    nodes = {
-        level_name: GraphNode(level=level, previous_nodes=[], next_nodes=[])
-        for level_name, level in levels.items()
-    }
+    nodes = [
+        GraphNode(level=level_permutation, previous_nodes=[], next_nodes=[])
+        for _name, level_permutations in levels.items()
+        for level_permutation in level_permutations
+    ]
     for row in sheet.rows:
         level_name = row[0].value
         if level_name == "level":
             continue
         if level_name is None:
             break
-        node = nodes[level_name]
-        node.required = bool(row[2].value)
+        level_permutations = [node for node in nodes if node.level.name == level_name]
+        for level_permutation in level_permutations:
+            level_permutation.required = bool(row[2].value)
         for previous_node_name in row[1].value.split(","):
-            previous_node = nodes[previous_node_name]
-            node.previous_nodes.append(previous_node)
-            previous_node.next_nodes.append(node)
-    return Graph(nodes=nodes.values())
+            for candidate_previous_node in nodes:
+                if candidate_previous_node.level.name == previous_node_name:
+                    for level_permutation in level_permutations:
+                        if (
+                            level_permutation.level.enter
+                            != candidate_previous_node.level.exit
+                        ):
+                            continue
+                        level_permutation.previous_nodes.append(candidate_previous_node)
+                        candidate_previous_node.next_nodes.append(level_permutation)
+    return Graph(nodes=nodes)
 
 
 def parse_workbook(workbook):
@@ -63,7 +72,7 @@ def parse_sheet(sheet, levels):
                 notes=row[6].value,
                 granted_item=granted_item,
             )
-            levels[level.name] = level
+            levels[level.name] = levels.get(level.name, []) + [level]
         except Exception as e:
             raise Exception(f"Failed to parse level: {row[0].value} with error: {e}")
 
