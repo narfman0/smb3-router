@@ -28,13 +28,14 @@ class Level:
     frames: int
     difficulty: int
     enter: str
+    star: bool
     exit: str
     notes: str = ""
     granted_item: Item = None
 
 
 @dataclass
-class Node:
+class GraphNode:
     level: Level
     previous_nodes: List = field(repr=False)
     next_nodes: List = field(repr=False)
@@ -42,8 +43,15 @@ class Node:
 
 
 @dataclass
+class PathNode:
+    level: Level
+    enter: str
+    item_used: Item = None
+
+
+@dataclass
 class Graph:
-    nodes: List[Node]
+    nodes: List[GraphNode]
     start_node_name: str = "1-1"
     end_node_name: str = "BC"
 

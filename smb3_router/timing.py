@@ -10,4 +10,4 @@ def frames_to_seconds(frames):
 
 
 def seconds_to_duration_string(seconds):
-    return f"{int(seconds // 60)}:{int(seconds % 60)}"
+    return f"{int(seconds // 60)}:{'{:02d}'.format(int(seconds % 60))}"

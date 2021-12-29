@@ -1,6 +1,6 @@
 from openpyxl import load_workbook
 
-from smb3_router.models import Item, Graph, Level, Node
+from smb3_router.models import Item, Graph, Level, GraphNode
 
 
 def parse(path="data/times.xlsx", graph_name="Warpless"):
@@ -12,7 +12,7 @@ def parse(path="data/times.xlsx", graph_name="Warpless"):
 def parse_graph(sheet, levels):
     """ Parse a graph, which represents a route for a specific category """
     nodes = {
-        level_name: Node(level=level, previous_nodes=[], next_nodes=[])
+        level_name: GraphNode(level=level, previous_nodes=[], next_nodes=[])
         for level_name, level in levels.items()
     }
     for row in sheet.rows:
@@ -49,17 +49,18 @@ def parse_sheet(sheet, levels):
                 continue
             if level_name is None:
                 break
-            mssff = str(int(row[4].value))
-            granted_item = row[6].value
+            mssff = str(int(row[5].value))
+            granted_item = row[7].value
             if granted_item:
                 granted_item = Item.value_of(granted_item)
             level = Level(
                 name=level_name,
                 difficulty=int(row[1].value),
                 enter=row[2].value,
-                exit=row[3].value,
+                star=bool(row[3].value),
+                exit=row[4].value,
                 frames=frames_from_mssff(mssff),
-                notes=row[5].value,
+                notes=row[6].value,
                 granted_item=granted_item,
             )
             levels[level.name] = level
