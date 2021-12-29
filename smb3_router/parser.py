@@ -5,7 +5,7 @@ from smb3_router.models import Item, Graph, Level, Node
 
 def parse(path="data/times.xlsx", graph_name="Warpless"):
     workbook = load_workbook(path)
-    levels = parse_levels(workbook)
+    levels = parse_workbook(workbook)
     return parse_graph(workbook[graph_name], levels)
 
 
@@ -30,12 +30,21 @@ def parse_graph(sheet, levels):
     return Graph(nodes=nodes.values())
 
 
-def parse_levels(workbook):
+def parse_workbook(workbook):
     levels = {}
     for world_number in range(1, 9):
         sheet = workbook[f"World{world_number}"]
-        for row in sheet.rows:
-            level_name = row[0].value
+        try:
+            parse_sheet(sheet, levels)
+        except Exception as e:
+            raise Exception(f"Failed to parse sheet: {sheet.title} with error: {e}")
+    return levels
+
+
+def parse_sheet(sheet, levels):
+    for row in sheet.rows:
+        level_name = row[0].value
+        try:
             if level_name == "level":
                 continue
             if level_name is None:
@@ -54,7 +63,8 @@ def parse_levels(workbook):
                 granted_item=granted_item,
             )
             levels[level.name] = level
-    return levels
+        except Exception as e:
+            raise Exception(f"Failed to parse level: {row[0].value} with error: {e}")
 
 
 def frames_from_mssff(mssff):

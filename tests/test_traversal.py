@@ -10,6 +10,5 @@ class TestTraversal(unittest.TestCase):
         graph = parse()
         cost, path = compute_path(graph)
         self.assertEqual(67, len(path))
-        self.assertEqual(168177, cost)
-        duration = frames_to_duration_string(cost)
-        print(f"Time: {duration}")
+        self.assertEqual(166349, cost)
+        print(f"Time: {frames_to_duration_string(cost)}")
